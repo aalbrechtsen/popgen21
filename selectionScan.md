@@ -1,8 +1,8 @@
-#title Scan statistics
+# Scan statistics
 
-  #<contents>
+  # <contents>
 
-* Variability statistics
+## Variability statistics
 
  
 
@@ -16,11 +16,12 @@ We will use individuals sequencing in the 1000 genomes project. Even thought the
 We will use the program selscan with contains many of the haplotype based methods used for scan statistics. These methods are based on phased genotpe data.
 
 In the terminal set the paths to the data and program
-<example>
+```console
+## path for this exercise
+ThePath=/ricco/data/anders/summer
+  
 #selscan program folder
-SS=/home/albrechtsen/embo2021/prog/selscan/bin/linux/
-
-ThePath=/home/albrechtsen/embo2021
+SS=$ThePath/prog/selscan/bin/linux/
 
 #VCF files
 ceuVCF=$ThePath/EHH/data/ceuLCT.recode.vcf
@@ -28,21 +29,21 @@ yriVCF=$ThePath/EHH/data/yriLCT.recode.vcf
 
 #genetic map (positions in centimorgans)
 MAP=$ThePath/EHH/data/geneticV2.map
-</example>
+```
 
 
 Look inside one of the VCF files e.g.
 
-<example>
+```console
 less -S $yriVCF
-</example>
+```
 
  - How can you tell that it is phased data?
  - The VCF file has been filters for certain types of sites. Which ones?
 
 
 
-*** variability/Tajimas pi
+### variability/Tajimas pi
 
 First lets look at the variability of the data in the CEU.
 
@@ -50,13 +51,13 @@ First lets look at the variability of the data in the CEU.
 
 Estimate tajimas theta (pi) in 10k windows
 
-<example>
+```console
 $SS/selscan --pi --vcf $ceuVCF --map $MAP --out ceuLCT --threads 8 --pi-win 10000
-</example>
+```
 
 You can plot the results in R e.g.
 
-<example>
+```console
 #in R (open R by typing R in the terminal)
 r<-read.table("ceuLCT.pi.10000bp.out",head=F)
 r<-subset(r,V3!=0)
@@ -65,19 +66,20 @@ causalSNP <- 136608646
 abline(v=136.5e6,col="red")
 legend("topleft",fill="red","LCT")
 ## don't close R
-</example>
+```
 
-; If you are having problems with graphic then you can find the plots [[plots][here]]
+<!--- If you are having problems with graphic then you can find the plots [[plots][here]] --->
 
  - Can you see the reduced variability?
 
 To determine whether it is extreme we can compare with the rest of the region
-<example>
+```console
 #continue in R
 hist(r[,3],br=100)
 (causalWin<-subset(r,V1<causalSNP & V2>causalSNP))
 abline(v=causalWin[,3],col="red")
-</example>
+```
+ 
 
  - is the variability in the LCT region extreme?
 
@@ -87,39 +89,39 @@ abline(v=causalWin[,3],col="red")
 NB!. This is based on genotypes. I will get back to how to do it for low depth data using genotype likelihoood
 
 
-[[tajimasD.html][BONUS: If you want to see tajimas D instead]]
+[BONUS: If you want to see tajimas D instead](http://popgen.dk/albrecht/phdcourse/html/tajimasD.html)
 
 Use the browser to see how Tajima's D perform on the same data
 
-* Haplotype based ( EHH ) scan statistics
+## Haplotype based ( EHH ) scan statistics
 
-*** IHS
+### IHS
 
 Lets see if the haplotype homozygosity does a better job. Run IHS using the command
 
-<example>
+```console
 $SS/selscan --ihs --vcf $ceuVCF --map $MAP --out ceuLCT --threads 8
-</example>
+```
 
 The analysis will take a couple of minutes. If you cannot wait then you can copy the results with the command
 
-<example>
+```console
 cp $ThePath/run/ceuLCT.ihs* .
-</example>
+```
 
 The output colums are : <locusID> <physicalPos> <'1' freq> <ihh1> <ihh0> <unstandardized iHS>
 
 
 This statistics will be affected by the frequency of the SNPs therefore we have to normalize in frequency bins. The default in 100 bins 
 
-<example>
+```console
 $SS/norm --ihs --files ceuLCT.ihs.out 
-</example>
+```
 
 The number of bins in too high for this data set since we do not have enough SNPs for each bin of allele frequencies. Therefore, redo the analysis where  you  reduce the number of bins to 20 with the - -bins 20 option.
 
 Lets plot the results in R
-<example>
+```console
 r <- read.table("ceuLCT.ihs.out.20bins.norm",as.is=T,head=F)
 names(r) <- c("locusID", "physicalPos","freq","ihh1","ihh0","unstandardizediHS")
 r[which.max(r$ihh1/r$ihh0),]
@@ -137,29 +139,29 @@ abline(v=causalSNP,col="red")
 hist(r$iHS)
 abline(v=causalSite$iHS,col="red")
 # close R when you are done
-</example>
+```
 
 Lets try to use the West Africans (YRI) to normalize the IHS using XpEHH
 
-<example>
+```console
 $SS/selscan --xpehh --vcf $ceuVCF --map $MAP --vcf-ref $yriVCF   --out ceuLCT --threads 8
-</example>
+```
 It will take about 10mins so you should probably copy the results instead
 
-<example>
+```console
 cp $ThePath/run/ceuLCT.xpehh* .
-</example>
+```
 
 
 We also have to normalize this
 
-<example>
+```console
 $SS/norm --xpehh --files ceuLCT.xpehh.out
-</example>
+```
 
 again you can plot the results in R.
 
-<example>
+```console
 r<-read.table("ceuLCT.xpehh.out.norm",head=T,as.is=T,row.names=NULL)
 causalSNP <- 136608646
 (causalSite<-r[which(r$pos==causalSNP),])                 
@@ -176,7 +178,7 @@ abline(v=causalSite$normxpehh,col="red")
 #get the quantile
 mean(causalSite$normxpehh>r$normxpehh)
 
-</example>
+```
 
  - Are you more convinced that the site is under selection?
 
