@@ -20,7 +20,7 @@ mkdir gwasEx
 Go into this folder, download a packed version of the data that we will be analyzing today and unpack it. You can do this by typing:
 ```
 cd gwasEx
-cp /ricco/data/anders/summer/gwas/GWASex.tar.gz .
+cp /ricco/data/PhDCourse/gwas/GWASex.tar.gz .
 tar -xf GWASex.tar.gz
 ```
 List the content of the folder to see what files appeared:
