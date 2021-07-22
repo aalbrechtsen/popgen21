@@ -325,13 +325,13 @@ $PCANGSD -beagle $GL1000Genomes -o input -admix -admix_alpha 50
 Plot the results in R
 
 ```
-library(RcppCNPy,lib="/home/albrechtsen/R/x86_64-redhat-linux-gnu-library/3.6/") # Numpy library for R
 #open R
 pop<-read.table("pop.info",as.is=T)
 
-q<-npyLoad("input.admix.3.Q.npy")
+q<-as.matrix(read.table("input.admix.3.Q"))
 
 ## order according to population
+
 ord<-order(pop[,1])
 barplot(t(q)[,ord],col=2:10,space=0,border=NA,xlab="Individuals",ylab="Admixture proportions")
 text(tapply(1:nrow(pop),pop[ord,1],mean),-0.05,unique(pop[ord,1]),xpd=T)
