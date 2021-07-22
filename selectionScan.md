@@ -18,7 +18,7 @@ We will use the program selscan with contains many of the haplotype based method
 In the terminal set the paths to the data and program
 ```console
 ## path for this exercise
-ThePath=/ricco/data/anders/summer
+ThePath=/ricco/data/PhDCourse
   
 #selscan program folder
 SS=$ThePath/prog/selscan/bin/linux/
