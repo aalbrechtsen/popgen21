@@ -119,7 +119,7 @@ Now let try to use the PC to infer selection along the genome based on the PCA
 ```
 $PCANGSD -beagle $EU1000 -o EUsmall -selection -sites_save -minMaf 0
 # crate file with position and chromosome
- paste <(zcat /ricco/data/PhdCourse/PCangsd/data/eu1000g.small.beagle.gz| cut -f 1 | sed 's/\_/\t/g' | sed 1d ) EUsmall.sites  > EUsmall.sites.info
+ paste <(zcat $ThePath/PCangsd/data/eu1000g.small.beagle.gz| cut -f 1 | sed 's/\_/\t/g' | sed 1d ) EUsmall.sites  > EUsmall.sites.info
 ```
 
 View the SNP location info that you will need to plot the results (the third column indicate if the site is used=1 or not =0)
@@ -132,7 +132,7 @@ head EUsmall.sites.info
 plot the results of the selection scan 
 
 ```
-library(RcppCNPy,lib="/home/albrechtsen/R/x86_64-redhat-linux-gnu-library/3.6/") # Numpy library for R
+library(RcppCNPy) # Numpy library for R
 
 ## function for QQplot
 qqchi<-function(x,...){
@@ -155,7 +155,7 @@ p<-read.delim("EUsmall.sites.info",colC=c("factor","integer","integer"),head=F)
 names(p)<-c("chr","pos","keep")
 
 ## make manhatten plot
-plot(-log10(pval),col=p$chr[p$keep==1],xlab="Chromosomes",main="Manhatten plot")
+plot(-log10(pval),col=p$chr[p$keep==1],xlab="Chromosomes",main="Manhattan plot")
 
 ## zoom into region
  w<-range(which(pval<1e-7)) + c(-100,100)
