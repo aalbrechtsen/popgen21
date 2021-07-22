@@ -4,36 +4,38 @@
 
 
 
-#title SFS, Fst and PBS
+# SFS, Fst and PBS
 
 The data is from the 1000 genomes project which included the populations:
 
-
+```
 CEU     | Europeans (mostly of British ancestry)
 JPT     | East Asian - Japanese individuals
 YRI     | West African - Nigerian Yoruba individuals
-<br>
+```
 
 
 
+Due to computation we will use a very reduced data set:
 
-Due to computation We will use a very reduced data set:
  - Input data: bam files
  - 10 individuals from each population
- - a very reduced genome 30 x 100k random regions across the autosomes + a non-random region
+ - A very reduced genome 30 x 100k random regions across the autosomes + a non-random region
  - Each individual is sequenced at 2-6X
 
 
 
-**Aims**:
+## Aims:
+
  - To reconstruct the SFS (1D and 2D)
  - To estimate Fst between pairs of popualtions
  - To perform a scan statistics using PBS to detect signs of positive selection
 
 
+## Set up
 
 First set some paths
-* set some paths
+
 ```
 # NB this must be done every time you open a new terminal
 ThePath=/ricco/data/PHDcourse
@@ -58,7 +60,8 @@ BAMFOLDERchr5=$ThePath/sfs/data/chr5_33M_v2
 cp $ThePath/sfs/plot2dSFS.R .
 ```
 
- make some file lists of bam files
+Make some file lists of bam files
+
 ```
 #a African population
 find $BAMFOLDER | grep bam$ | grep YRI > YRI.filelist
@@ -71,7 +74,7 @@ find $BAMFOLDER | grep bam$ | grep CEU > CEU.filelist
                                                                                                  
      
 
-* Reconstructing the site frequency spectrum
+## Reconstructing the site frequency spectrum
 
 
 
@@ -95,6 +98,7 @@ $ANGSD -b  CEU.filelist  -anc $ANC -out ceu $FILTERS $OPT -ref $REF
 The run time is a couple of minutes
 
 If it takes to long then you can copy the results using this command:
+
 ```
 cp $ThePath/run/yri.saf* .
 cp $ThePath/run/ceu.saf* .
@@ -176,7 +180,9 @@ The above example is for the African population. Try to run it for all three pop
  - which has the largest populations size
  - which has the largest variability (fraction of polymorphic/segregating sites)
 
-** Fst and PBS
+
+## Fst and PBS
+
 In order to estimate Fst between two population we will need to estimate the 2-dimensional frequency spectrum from the site allele frequency likelihoods 
 
 ```
@@ -342,10 +348,10 @@ legend("topleft",fill=1:3,c("YRI","JPT","CEU"))
 Find out what genes is in this region by going to the [[https://genome.ucsc.edu/index.html][UCSC browser]]. Choose Genome browser. Choose human GRCh37/hg19 and find the region. Read about this gene on wikipedia and see if this fits PBS results. 
 
 
-*** Bonus
-
+## Bonus
 
 We can compare with what happens if we try to call genotypes by calling SNPs and genotypes like GATK. If you are running out of time then skip this part
+
 ```
 FILTERS2="-minMapQ 30 -minQ 20 -minInd 10"                           
 
@@ -365,6 +371,7 @@ While it runs you can look at the options we choose:
 
 
 Plot the results in R
+
 ```
  ##run in R                      
 #plot the results
@@ -410,8 +417,7 @@ barplot(resDown,beside=T,legend=c("YRI","JPT","CEU"),names=1:9)
 
 
 
-
- * Bonus exercise: Population differentiation using genotype based PBS
+### Bonus exercise: Population differentiation using genotype based PBS
 
 Here we will use the called genotypes for the whole genome from 4 1000G populations each with more then 100 individuals. We will use a browser to explore the genome using PBS statistics.
 
@@ -435,22 +441,24 @@ runApp("/home/albrechtsen/embo2021/selectionScan/",port=3838)
 
 This will open a browser but it will take a minute or two to start so be patient .
 
-- When the application shows "press run analysist" then it is ready
+- When the application shows "press run analysis" then it is ready
 
-; Go to http://popgen.dk:3838/anders/popgen2016/selectionScan/
+Go to http://popgen.dk:3838/anders/popgen2016/selectionScan/
 
-Europeans. Let see if we can do better than the Tajimaâ€™s D by using the PBS statistics. First select 3 populations from
+Europeans. Let see if we can do better than the Tajima's D by using the PBS statistics. First select 3 populations from
+
  - NAT - Native Americans (PERU+Mexico)
- - CHB â€“ East Asian - Han Chinese
- - CEU â€“ Central Europeans
- - YRI â€“ African - Nigerians
+ - CHB - East Asian - Han Chinese
+ - CEU - Central Europeans
+ - YRI - African - Nigerians
+
 The first population is the one which branch you are investigating. The two others are the one you are comparing to. Chose CEU as the first and choose CHB and YRI as the two others.
 
 First lets get an overview of the whole genome by making a manhattan plot
 
-Press â€œRun analysisâ€. Note which chromosomes have extreme values
+Press "Run analysis". Note which chromosomes have extreme values
 
-To view a single chromosome â€“ go to PBS region
+To view a single chromosome go to PBS region
 
  - Chose the chromosome and set the starting position to -1 to get the whole chromosome
 
@@ -458,7 +466,7 @@ To view a single chromosome â€“ go to PBS region
  - Locate the most extreme regions of the genome
 
  - Try the LCT gene (the mutations are locate in the adjacent MCM6 gene, chr2 136.5Mb). Remember to choose the relevant populations
-H - ow does this compare with Tajimaâ€™s D
+ - How does this compare with Tajima's D
 
 If you have time you can try other genes. Here are the top ones for Humans. You can find the find the location of the genes using for example the ucsc browser https://genome-euro.ucsc.edu/cgi-bin/hgGateway
  (choose human GRCh37/hg19 genome). Note that there are some population that you cannot test because the populations are not represented in the data e.g. Tibetan, Ethiopian , Inuit, Siberians. 
