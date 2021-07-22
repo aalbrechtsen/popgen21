@@ -109,7 +109,11 @@ The analysis will take a couple of minutes. If you cannot wait then you can copy
 cp $ThePath/run/ceuLCT.ihs* .
 ```
 
-The output colums are : <locusID> <physicalPos> <'1' freq> <ihh1> <ihh0> <unstandardized iHS>
+The output colums are: 
+
+```
+<locusID> <physicalPos> <'1' freq> <ihh1> <ihh0> <unstandardized iHS>
+ ```
 
 
 This statistics will be affected by the frequency of the SNPs therefore we have to normalize in frequency bins. The default in 100 bins 
