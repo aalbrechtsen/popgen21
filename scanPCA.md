@@ -475,7 +475,7 @@ While waiting,  let's try to understand the above command and get some info abou
 If ANGSD hasn't finished running yet and you are tired of waiting for it to do so, then stop it (by typing Ctrl-C) and copy the resulting files (pre-made by us) by typing:
 
 ```
-cp /home/ida/teaching/popgen17/admixexercise/ANGSDoutput/all* .
+cp $ThePath/run/all.beagle.gz $ThePath/run/all.mafs.gz $ThePath/run/all.arg $ThePath/run/all.log .
 ```
 
 Explore the input data
@@ -550,6 +550,7 @@ head -n1 all.files
  - Based on that ID, which population does the individual come from?
  - What does this suggest about what column to look for the frequencies for that population in the qopt file?
  - Based on this and the frequency estimates for the first locus that you looked at earlier, what does NGSadmix estimate the allele frequency to be at the first locus in that population?
+
 
 *** Plot the admixture proportion estimates
 Finally, try to make a simple plot the estimated admixture proportions for all the individuals by opening the statistical program called R (which you do by typing "R" in the terminal and pressing enter) and then copy pasting the following code:
