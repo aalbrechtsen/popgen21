@@ -167,7 +167,7 @@ plot(-log10(pval),col=p$chr[p$keep==1],xlab="Chromosomes",main="Manhatten plot")
 ```
 
 see if you can make sense of the top hit based on the genome.
- - Look in [[http://genome.ucsc.edu/cgi-bin/hgGateway][UCSC browser]]
+ - Look in [UCSC browser](http://genome.ucsc.edu/cgi-bin/hgGateway)
  - Choose human GRCh38/hg38
  - search for the position of the top hit and identify the genes at that loci
 
@@ -276,8 +276,8 @@ evince PCAngsd.pdf
 
 
 Compare with the estimate admixture proportions (a NGSadmix analysis)
+![K=3 plot](http://popgen.dk/albrecht/phdcourse/html/plots/BestK3.png)
 
-[[../html/plots/BestK3.png][plot]]
 
  - In the PCA plot can you identify the Mexicans with only European ancestry?
  - What about the African American with East Asian ancestry?
@@ -386,7 +386,7 @@ paste pop.info IB.inbreed.samples | LC_ALL=C sort -k3g
 
 In this exercise we will try to use NGSadmix to analyze two different NGS datasets.
 
-*** Login to the server and set paths ***
+### Login to the server and set paths 
 
 First open a terminal and login to the server.
 Next - before running any analyses - you need to set paths to the programs and the data you will use. Do this by pasting the following into your terminal window:
@@ -427,7 +427,7 @@ Due to computation We will use a very reduced data set:
 
 
 
-**Aims**:
+### Aims:
 
  - to Generate Genotype likelihood files in the beagle format
  - To infer admixture proportions for low depth sequencing data
@@ -435,7 +435,7 @@ Due to computation We will use a very reduced data set:
 
 
 
-*** Make input data using ANGSD
+### Make input data using ANGSD
 The input to NGSadmix is genotype likelihoods (GLs). Therefore the first step of running an NGSadmix analysis if all you have are bams files is to calculate GLs. So let's start bying doing that. First make a file that contains the paths of all the 30 bam files:
 
 ```
@@ -472,7 +472,7 @@ While waiting,  let's try to understand the above command and get some info abou
  -P 5 : tells ANDSG use 5 threads (up to 500% CPU)
 ```
 
-f ANGSD hasn't finished running yet and you are tired of waiting for it to do so, then stop it (by typing Ctrl-C) and copy the resulting files (pre-made by us) by typing:
+If ANGSD hasn't finished running yet and you are tired of waiting for it to do so, then stop it (by typing Ctrl-C) and copy the resulting files (pre-made by us) by typing:
 
 ```
 cp /home/ida/teaching/popgen17/admixexercise/ANGSDoutput/all* .
@@ -502,16 +502,16 @@ then GL for heterozygote and then GL for homozygote for allele2). Note that the 
  - Based on this, what is the most likely genotype of Ind0 in the first locus and the second locus?
 
 
-*** Run an analysis of the data with NGSadmix
+### Run an analysis of the data with NGSadmix
 Now you know how the input looks. Next, let's try to perform an NGSadmix analyses of the GLs typing assuming the number of ancestral populations, K, is 3:
 
-<example>
+```
 $NGSadmix -likes all.beagle.gz -K 3 -minMaf 0.05 -seed 1 -o all
-</example>
+```
 
- - While waiting for the analysis to run then make sure you understand the command. If you are in doubt seek help [[http://www.popgen.dk/software/index.php/NgsAdmix#Brief_Overview][here]]. Here you can also see what other options you have when you run an NGSadmix analyses.
+ - While waiting for the analysis to run then make sure you understand the command. If you are in doubt seek help[here](http://www.popgen.dk/software/index.php/NgsAdmix#Brief_Overview). Here you can also see what other options you have when you run an NGSadmix analyses.
 
-*** Explore the output
+### Explore the output
 The output from the analysis you just ran is three files:
  -  all.beagle.gz.log (a "log file" that summarizes the analysis run)
  -  all.beagle.gz.fopt.gz (an "fopt file", which has a line for each locus that contains an estimate of the allele frequency in each of the 3 assumed ancestral populations)
@@ -519,33 +519,33 @@ The output from the analysis you just ran is three files:
 
 Let's have a look at them one at a time. First, check the log file by typing
 
-<example>
+```
 cat all.log
-</example>
+```
 
  - What is the log likelihood of the estimates achieved by NGSadmix (called "best like" in the log file)?
 
 Next, check the first line of the fopt file by typing:
 
-<example>
+```
 zcat all.fopt.gz | head -n1
-</example>
+```
 
  - Based on this: what is the estimated allele frequency of the first SNP in three assumed ancestral populations?
 
 Finally, check the first line of the qopt file and thus the estimated admixture proportions for the first individuals by typing:
 
-<example>
+```
 head -n1 all.qopt
-</example>
+```
 
  - Based on this: does the individual look admixed?
 
 You can see the ID of the first individual by getting the first line of the file you created with all your original bam files in the beginning:
 
-<example>
+```
 head -n1 all.files
-</example>
+```
 
  - Based on that ID, which population does the individual come from?
  - What does this suggest about what column to look for the frequencies for that population in the qopt file?
@@ -554,7 +554,7 @@ head -n1 all.files
 *** Plot the admixture proportion estimates
 Finally, try to make a simple plot the estimated admixture proportions for all the individuals by opening the statistical program called R (which you do by typing "R" in the terminal and pressing enter) and then copy pasting the following code:
 
-<example>
+```
 ## open R
 # Get ID and pop info for each individual
 s<-strsplit(basename(scan("all.files",what="theFuck")),"\\.")
@@ -567,7 +567,7 @@ q<-read.table("all.qopt")
 ord = order(pop)
 par(mar=c(7,4,1,1))
 barplot(t(q)[,ord],col=c(2,1,3),names=pop[ord],las=2,ylab="Admixture proportions",cex.names=0.75)
-</example>
+```
 
 ; If for some reason no plot pops up (technical issue) you can see the plot [[admixexercisefiles/plots/all_NGSadmix_new.pdf][here]].
 
@@ -595,7 +595,7 @@ NB As you could tell from the number of loci included in the analysis, the above
  - What does that suggest about whether the individuals are admixed?
 
 
-** More realistic example
+## More realistic example
 Now you know how to make input data to NGSadmix, how to run NGSadmix and what the output looks like. Let's try to look at a more realistic size dataset. More specifically let's try to run NGSadmix on data from the 1000 genomes project from the following populations:
 
 ASW     |  HapMap African ancestry individuals from SW US
@@ -611,26 +611,26 @@ MXL | Mexican individuals from LA California
 
 To save time we have already made the input file for you for this dataset and a file with population info.
 
-<example>
+```
 #A file with genotype likelihoods from 100 individuals in beagle format: path:
 $ThePath/admixture/data/input.gz
 
 ##A file with labels that indicate which population they are sampled from:
 $ThePath/admixture/data/pop.info
-</example>
+```
 
 *** Take a quick look at the data
 First try to get an overview of the dataset by copying the information file and making a summary using the following:
 
 
 
-<example>
+```
 #copy to folder
 cp $ThePath/admixture/data/pop.info .
 
 ## cut first column | sort | count
 cut -f 1 -d " " pop.info | sort | uniq -c
-</example>
+```
 
  - Which countries are the samples from and how many samples from each?
 
@@ -643,16 +643,16 @@ Now look at the genotype file input.gz. It is in the same format at the file we 
 *** Run an analysis of the data with NGSadmix
  Try to start an analysis of the data with NGSadmix with K=3 (-K 3), using 1 cpu (-P 1), using only SNPs with minor allele frequency above 0.05 (-minMaf 0.05), set the seed set to 21 (-seed 21) and set the prefix of the output files to myownoutfilesK3 (-o myownoutfilesK3).
 
- <example>
+ ```
  $NGSadmix -likes $ThePath/admixture/data/input.gz -K 3 -P 4 -minMaf 0.05 -seed 21 -o myownoutfilesK3
- </example>
+ ```
 
 ;
 ; Try to write the command you would run if you wanted to run an analysis of the data with NGSadmix with K=3 (-K 3), using 4 cpu (-P 4), using only SNPs with minor allele frequency above 0.05 (-minMaf 0.05), set the seed set to 21 (-seed 21) and set the prefix of the output files to myownoutfilesK3 (-o myownoutfilesK3).
 
 
 Next, plot the estimated admixture proportions by running the following code in R :
-<example>
+```
 ## open R
 
 ## read population labels and estimated admixture proportions
@@ -664,38 +664,19 @@ ord<-order(pop[,1])
 barplot(t(q)[,ord],col=2:10,space=0,border=NA,xlab="Individuals",ylab="Admixture proportions")
 text(tapply(1:nrow(pop),pop[ord,1],mean),-0.05,unique(pop[ord,1]),xpd=T)
 abline(v=cumsum(sapply(unique(pop[ord,1]),function(x){sum(pop[ord,1]==x)})),col=1,lwd=1.2)
-</example>
+```
 
-; Again, if for some reason no plot pops up (technical issue) you can see the plot [[URL:admixexercisefiles/plots/BestK3.png][here]].
+
 
 Note that - like in the previous example - the order of the individuals in the plot are not the same as in the qopt file. Instead, to provide a better overview, the individuals have been ordered according to their population labels.
 
  - Try to explain what the plot shows (what is on the axes, what do the colors mean and so on)
  - What does the plot suggest in terms of population structure and admixture?
 
-; *** Assessing convergence
-;  - Try to plot the results of your own NGSadmix analysis using the same R code as above just with the path and name of the qopt file changed). Does your results differ much from the results of my best run?
-;  - How much lower is the likelihood from the analysis you ran yourself? (if it is not done running then just skip this question)
-; - Among my runs the difference between the likelihood from run 20 (top run) and the likelihood of the run with the 10th highest likelihood is about .02. Does it look like convergence has been reached and that the top run is (close to being) the ML solution?
-; - Among the runs I ran I got this result: [[admixexercisefiles/NGSadmixoutput/myoutfilesxxK3.log][log file]] and [[admixexercisefiles/NGSadmixoutput/myoutfilesxxK3.qopt][qopt file]]. Try to look at the likelihood and compare it to the likelihood from the top run. What do you think happened?
-; - Try to plot the estimated admixture proportions for this run (the qopt file is located the same place as the qopt file for the best run and is myoutfilesxxK3.qopt so you can plot it by using the same R code as before but just with file name changed from myoutfiles20K3.qopt to myoutfilesxxK3.qopt).
-; Again, if for some reason no plot pops up (technical issue) you can see the plot [[URL:admixexercisefiles/plots/badK3.png][here]].
-; - What conclusion would you have made for the Europeans if you had only done this single run (and knew nothing about the demographic history of the populations you were analyzing)?
-
-; *** Look at your own results (if you have time)
-; - What is the likelihood for you own run? (look in the log file)?
-; - Is it close to that of the best of my runs?
-; - Try to plot the estimated admixture proportions
-; - Is the result similar to the the best of my solutions?
-
-*** Other K values (if you have time)
+### Other K values (if you have time)
  - Try to run NGSadmix with K=4 instead.
- - Plot the output (if you have trouble plotting it here is the plot I got: [[URL:http://popgen.dk/albrecht/phdcourse/admixture/data/bestK4.png][K4 plot]].
-; - What do they suggest in terms of population structure and admixture?
+ - Plot the output (if you have trouble plotting it here is the plot I got: [K4 plot](http://popgen.dk/albrecht/phdcourse/admixture/data/bestK4.png)
+
  - Based on all the results what can you say about the Mexican samples (MXL)?
 
-; *** If you do not have NGS data (tip)
-; If you do not have NGS data but instead called genotypes e.g. from a SNP chip another easy to use tool is Admixture.
-; Another option is STRUCTURE which you can also use for microsatellite data.
-; You can read about these programs here: [[http://www.genetics.ucla.edu/software/admixture/index.html][Admixture]] and [[http://pritchardlab.stanford.edu/structure.html][STRUCTURE]].
 
