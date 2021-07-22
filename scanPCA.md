@@ -241,7 +241,7 @@ then GL for heterozygote and then GL for homozygote for allele2). Note that the 
 ### PCA with admixture aware priors 
 
 Let's try to perform PCA analysis on the same 1000 genotype genotype likelihoods 
-; source /usr/local/anaconda/bin/activate PCangsd
+
 
 
 ```
@@ -569,7 +569,7 @@ par(mar=c(7,4,1,1))
 barplot(t(q)[,ord],col=c(2,1,3),names=pop[ord],las=2,ylab="Admixture proportions",cex.names=0.75)
 ```
 
-; If for some reason no plot pops up (technical issue) you can see the plot [[admixexercisefiles/plots/all_NGSadmix_new.pdf][here]].
+
 
 Note that the order of the individuals in the plot are not the same as in the qopt file. Instead, to provide a better overview, the individuals have been ordered according to the population they are from.
 
@@ -579,18 +579,7 @@ Note that the order of the individuals in the plot are not the same as in the qo
 
 NB As you could tell from the number of loci included in the analysis, the above analysis is based on data from very few loci (actually we on purpose only analyzed data from a small part of the genome to make sure the analysis ran fast). Results from an analyses of data from the entire genome can be seen [[http://popgen.dk/albrecht/phdcourse/html/plots/allWholegenome_NGSadmix.pdf][here]].
 
-; s<-strsplit(basename(scan("/home/albrecht/public/2015/all.files",what="theFuck")),"\\.")
-; pop<-sapply(s,function(x){paste(x[5],x[1],sep="_")})
-;
-; # Read inferred admixture proportions
-; q<-read.table("/home/albrecht/public/2015/allWholegenome.beagle.gz.qopt")
-;
-; # Plot them (ordered by population)
-; ord = order(pop)
-; pdf("allWholegenome_NGSadmix.pdf")
-; par(mar=c(7,3,1,1))
-; barplot(t(q)[,ord],col=c(3,2,1),names=pop[ord],las=2,ylab="Admixture proportions",cex.names=0.75)
-; graphics.off()
+
 
  - What does that suggest about whether the individuals are admixed?
 
@@ -647,8 +636,8 @@ Now look at the genotype file input.gz. It is in the same format at the file we 
  $NGSadmix -likes $ThePath/admixture/data/input.gz -K 3 -P 4 -minMaf 0.05 -seed 21 -o myownoutfilesK3
  ```
 
-;
-; Try to write the command you would run if you wanted to run an analysis of the data with NGSadmix with K=3 (-K 3), using 4 cpu (-P 4), using only SNPs with minor allele frequency above 0.05 (-minMaf 0.05), set the seed set to 21 (-seed 21) and set the prefix of the output files to myownoutfilesK3 (-o myownoutfilesK3).
+
+
 
 
 Next, plot the estimated admixture proportions by running the following code in R :
