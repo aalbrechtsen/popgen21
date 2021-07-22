@@ -25,7 +25,7 @@ First lets set the paths
 
 ```
  # NB this must be done every time you open a new terminal
-ThePath=/ricco/data/PHDCourse
+ThePath=/ricco/data/PhDCourse
 
 ## copy positions and sample information
 cp $ThePath/PCangsd/data/eu1000g.sample.Info .
