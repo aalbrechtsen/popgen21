@@ -38,7 +38,7 @@ First set some paths
 
 ```
 # NB this must be done every time you open a new terminal
-ThePath=/ricco/data/PHDcourse
+ThePath=/ricco/data/PhDCourse
 
 # Set path to ANGSD program
 ANGSD=$ThePath/prog/angsd/angsd
@@ -434,7 +434,7 @@ then open R and run the shiny application
 .libPaths( c( .libPaths(), "/home/albrechtsen/R"))
 library(shiny)
 
-runApp("/home/albrechtsen/embo2021/selectionScan/",port=3838)
+runApp("/ricco/data/PhDCourse/selectionScan/",port=3838)
 
 ```
 
