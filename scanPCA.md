@@ -394,7 +394,7 @@ Next - before running any analyses - you need to set paths to the programs and t
 ```
 # NB this must be done every time you open a new terminal
 
-ThePath=/ricco/data/PhdCourse
+ThePath=/ricco/data/PhDCourse
 
 # Set path to ANGSD program
 ANGSD=$ThePath/prog/angsd/angsd
