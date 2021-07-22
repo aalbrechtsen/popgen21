@@ -578,7 +578,7 @@ Note that the order of the individuals in the plot are not the same as in the qo
  - What does the plot suggest about whether the individuals are admixed?
 
 
-NB As you could tell from the number of loci included in the analysis, the above analysis is based on data from very few loci (actually we on purpose only analyzed data from a small part of the genome to make sure the analysis ran fast). Results from an analyses of data from the entire genome can be seen [http://popgen.dk/albrecht/phdcourse/html/plots/allWholegenome_NGSadmix.pdf](here).
+NB As you could tell from the number of loci included in the analysis, the above analysis is based on data from very few loci (actually we on purpose only analyzed data from a small part of the genome to make sure the analysis ran fast). Results from an analyses of data from the entire genome can be seen [here](http://popgen.dk/albrecht/phdcourse/html/plots/allWholegenome_NGSadmix.pdf).
 
 
 
