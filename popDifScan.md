@@ -151,8 +151,8 @@ barplot(resDown,beside=T,legend=c("YRI","JPT","CEU"),names=1:9,main="realSFS dow
 ```
 
  - Which population has the largest population size?
- - The data is a small subset of the genome (2Mb). If you had analysed 6Mb it sould have looked like [[http://popgen.dk/albrecht/phdcourse/html/plots/realSFS4.pdf][this]] 
- - The analysed whole chromosome for the 1000G individual look [[../sfs/Moltke5V2.pdf][like this]]
+ - The data is a small subset of the genome (2Mb). If you had analysed 6Mb it should have looked like [this](http://popgen.dk/albrecht/phdcourse/html/plots/realSFS4.pdf)
+ - The analysed whole chromosome for the 1000G individual look [like this](http://popgen.dk/albrecht/phdcourse/sfs/Moltke5V2.pdf)
 
 
 
@@ -340,12 +340,12 @@ points(r$midPos,r$PBS_CEU,col=3,type="b",pch=18)
 legend("topleft",fill=1:3,c("YRI","JPT","CEU"))
 ```
 
- - Compare the values you observed on this part of the genome with the random pars of the genome you looked at earlier ([[../../oulu2016/web/PBS.pdf][pdf]]). Is this region extreme?
+ - Compare the values you observed on this part of the genome with the random pars of the genome you looked at earlier [PDF](http://popgen.dk/albrecht/oulu2016/web/PBS.pdf). Is this region extreme?
  - Why is there two peak for the Fst and only one for the PBS?
  - In which of the populations are this loci under selection?
 
 
-Find out what genes is in this region by going to the [[https://genome.ucsc.edu/index.html][UCSC browser]]. Choose Genome browser. Choose human GRCh37/hg19 and find the region. Read about this gene on wikipedia and see if this fits PBS results. 
+Find out what genes is in this region by going to the [UCSC browser](https://genome.ucsc.edu/index.html). Choose Genome browser. Choose human GRCh37/hg19 and find the region. Read about this gene on wikipedia and see if this fits PBS results. 
 
 
 ## Bonus
@@ -409,8 +409,7 @@ barplot(resDown,beside=T,legend=c("YRI","JPT","CEU"),names=1:9)
 
 ```
 
- - How does this compare to the likelhood based estimates ([[../html/plots/realSFS.pdf][pdf]])
-
+ - How does this compare to the likelhood based estimates [pdf](http://popgen.dk/albrecht/phdcourse/html/plots/realSFS.pdf)
 
 
 
@@ -443,7 +442,7 @@ This will open a browser but it will take a minute or two to start so be patient
 
 - When the application shows "press run analysis" then it is ready
 
-Go to http://popgen.dk:3838/anders/popgen2016/selectionScan/
+Go to [shiny](http://popgen.dk:3838/anders/popgen2016/selectionScan/)
 
 Europeans. Let see if we can do better than the Tajima's D by using the PBS statistics. First select 3 populations from
 
@@ -470,5 +469,3 @@ To view a single chromosome go to PBS region
 
 If you have time you can try other genes. Here are the top ones for Humans. You can find the find the location of the genes using for example the ucsc browser https://genome-euro.ucsc.edu/cgi-bin/hgGateway
  (choose human GRCh37/hg19 genome). Note that there are some population that you cannot test because the populations are not represented in the data e.g. Tibetan, Ethiopian , Inuit, Siberians. 
-
-[[fig6.png]]
