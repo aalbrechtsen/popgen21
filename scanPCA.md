@@ -1,29 +1,30 @@
 # Inference of admixture and population structure
 
-<contents>
 
 
-* PCAngsd and selection
+## PCAngsd and selection
 
 For very resent selection we can look within closely related individuals for example with in Europeans
 
 **data:**
+
  - Genotype likelihoods in Beagle format
  - ~150k random SNPs with maf > 5%
  - Four EU populations with ~100 individuals in each
  - whole genome sequencing
  - depth 2-9X (1000 genome project)
 
+ ```
 CEU | Europeans in Utah (British)
 GBR | Great Britain
 IBS | Iberian/Spain
 TSI | Italien
-
+```
 
 First lets set the paths
 
-<example>
-# NB this must be done every time you open a new terminal
+```
+ # NB this must be done every time you open a new terminal
 ThePath=/ricco/data/PHDCourse
 
 ## copy positions and sample information
@@ -37,63 +38,66 @@ PCANGSD=`echo python3 $ThePath/prog/pcangsd/pcangsd.py`
 EU1000=$ThePath/PCangsd/data/eu1000g.small.beagle.gz
 wc eu1000g.sample.Info
 N=424 #one line for header
-</example>
+```
 
 
+## Explore the data
 
-** Explore the data
-*** Take a quick look at the samples data
+
+Take a quick look at the samples data
+
 First try to get an overview of the dataset by copying the information file and making a summary using the following:
 
 
 
-<example>
-## view first lines of sample file
+```
+ # view first lines of sample file
 head eu1000g.sample.Info
 ## cut first column | sort | count
 cut -f 2 -d " " eu1000g.sample.Info | sed 1d| sort | uniq -c
-</example>
+```
 
  - How many samples from each country?
 
-*** Explore the input data
 Now let's have a look at the GL file that you have created with ANGSD. It is a "beagle format" file called all.beagle.gz - and will be the input file to PCAangsd.
 The first line in this file is a header line and after that it contains a line for each locus with GLs. By using the unix command wc we can count the number of lines in the file:
 
-<example>
+```
 gunzip -c $EU1000 | wc -l
-</example>
+```
 
  - Use this to find out how many loci there are GLs for in the data set?
 
 Next, to get an idea of what the GL file contains try from the command line to print the first 9 columns of the first 7 lines of the file:
 
-<example>
+
+```
 gunzip -c $EU1000 | head -n 7 | cut -f1-9 | column -t
-</example>
+```
 
 In general, the first three columns of a beagle file contain marker name and the two alleles, allele1 and allele2, present in the locus (in beagle A=0, C=1, G=2, T=3).
+
 All following columns contain genotype likelihoods (three columns for each individual: first GL for homozygote for allele1,
 then GL for heterozygote and then GL for homozygote for allele2). Note that the GL values sum to one per site for each individuals. This is just a normalization of the genotype likelihoods in order to avoid underflow problems in the beagle software it does not mean that they are genotype probabilities.
 
  - Based on this, what is the most likely genotype of Ind0 in the first locus and the locus six?
 
 
-** PCAngsd
+## PCAngsd
 
 Run PCangsd with to estimate the covariance matrix while jointly estimating the individuals allele frequencies
 
-
-<example>
+```
 $PCANGSD -beagle $EU1000 -o EUsmall -threads 4
-</example>
+```
+
 The program estimates the covariance matrix that can then be used for PCA. look at the output from the program
 
  - The algorithm might only need to low number of PCs to estimate the allele freuqencies. How many significant PCs (see MAP test in output)?
 
 Plot the results in R
 
-<example>
+```
 ## R
  cov <- as.matrix(read.table("EUsmall.cov"))
 
@@ -103,8 +107,7 @@ Plot the results in R
 
  legend("topleft",fill=1:4,levels(ID$POP))
 ## close R after view plot
-</example>
-
+```
 
  - Does the plot look like you expected? Which populations are close and distant to each other?
 
@@ -113,24 +116,22 @@ Since the European individuals in 1000G are not simple homogeneous disjoint popu
 
 Now let try to use the PC to infer selection along the genome based on the PCA
 
-<example>
+```
 $PCANGSD -beagle $EU1000 -o EUsmall -selection -sites_save -minMaf 0
 # crate file with position and chromosome
  paste <(zcat /home/albrechtsen/embo2021/PCangsd/data/eu1000g.small.beagle.gz| cut -f 1 | sed 's/\_/\t/g' | sed 1d ) EUsmall.sites  > EUsmall.sites.info
-</example>
+```
 
-view the SNP location info that you will need to plot the results (the third column indicate if the site is used=1 or not =0)
+View the SNP location info that you will need to plot the results (the third column indicate if the site is used=1 or not =0)
 
-<example>
-
+```
 head EUsmall.sites.info 
-</example>
-
+```
 
 
 plot the results of the selection scan 
 
-<example>
+```
 library(RcppCNPy,lib="/home/albrechtsen/R/x86_64-redhat-linux-gnu-library/3.6/") # Numpy library for R
 
 ## function for QQplot
@@ -163,7 +164,7 @@ plot(-log10(pval),col=p$chr[p$keep==1],xlab="Chromosomes",main="Manhatten plot")
 
 ## see the position of the most significant SNP
  p$pos[which.max(s)]
-</example>
+```
 
 see if you can make sense of the top hit based on the genome.
  - Look in [[http://genome.ucsc.edu/cgi-bin/hgGateway][UCSC browser]]
@@ -172,60 +173,61 @@ see if you can make sense of the top hit based on the genome.
 
 
 
-* Bonus PCAngsd:  Structure from low depth sequencing data
+### Bonus PCAngsd:  Structure from low depth sequencing data
+
 First lets try a small data set from the low depth sequencing of the 1000 genomes  project from the following populations:
 
+```
 ASW     |  HapMap African ancestry individuals from SW US
 CEU     | European individuals
 CHB     |  Han Chinese in Beijing
 JPT     | Japanese individuals
 YRI     | Yoruba individuals from Nigeria
 MXL | Mexican individuals from LA California
+```
 
-.
 **data:** Genotype likelhoods in beagle format for the first 50k SNPs
 
 
 To save time we have already made the input file for you for this dataset and a file with population info.
-<example>
 
+```
 ## beagle genotype likelihood file
 GL1000Genomes=$ThePath/admixture/data/input.gz
 
 ## copy population information file to current folder
 cp $ThePath/admixture/data/pop.info .
 
-</example>
+```
 
-*** Take a quick look at the data
+ Take a quick look at the data
 First try to get an overview of the dataset by copying the information file and making a summary using the following:
 
 
 
-<example>
+```
 #copy to folder
 ## cut first column | sort | count
 cut -f 1 -d " " pop.info | sort | uniq -c
-</example>
+```
 
  - Which countries are the samples from and how many samples from each?
 
 
-*** Explore the input data
 Now let's have a look at the GL file that you have created with ANGSD. It is a "beagle format" file called all.beagle.gz - and will be the input file to PCAangsd.
 The first line in this file is a header line and after that it contains a line for each locus with GLs. By using the unix command wc we can count the number of lines in the file:
 
-<example>
+```
 gunzip -c $GL1000Genomes | wc -l
-</example>
+```
 
  - Use this to find out how many loci there are GLs for in the data set?
 
 Next, to get an idea of what the GL file contains try from the command line to print the first 9 columns of the first 7 lines of the file:
 
-<example>
+```
 gunzip -c $GL1000Genomes | head -n 7 | cut -f1-9 | column -t
-</example>
+```
 
 In general, the first three columns of a beagle file contain marker name and the two alleles, allele1 and allele2, present in the locus (in beagle A=0, C=1, G=2, T=3).
 All following columns contain genotype likelihoods (three columns for each individual: first GL for homozygote for allele1,
@@ -236,15 +238,15 @@ then GL for heterozygote and then GL for homozygote for allele2). Note that the 
 
 
 
-** PCA with admixture aware priors 
+### PCA with admixture aware priors 
 
 Let's try to perform PCA analysis on the same 1000 genotype genotype likelihoods 
 ; source /usr/local/anaconda/bin/activate PCangsd
 
 
-<example>
+```
 $PCANGSD -beagle $GL1000Genomes -o input
-</example>
+```
 
 The program estimates the covariance matrix that can then be used for PCA. look at the output from the program
 
@@ -252,7 +254,7 @@ The program estimates the covariance matrix that can then be used for PCA. look 
 
 Plot the results in R
 
-<example>
+```
 #open R
 pop<-read.table("pop.info")
 
@@ -263,15 +265,13 @@ plot(e$vectors[,1:2],col=pop[,1],xlab="PC1",ylab="PC2")
 legend("top",fill=1:5,levels(pop[,1]))
 dev.off()
 ## close R
-</example>
+```
 
 view the results with
 
-<example>
-
+```
 evince PCAngsd.pdf
-</example>
-
+```
 
 
 
@@ -285,12 +285,13 @@ Compare with the estimate admixture proportions (a NGSadmix analysis)
 
 Try the same analysis but without estimating individual allele frequencies. This is the same as using the first iteration of the algorithm
 
-<example>
+```
 $PCANGSD -beagle $GL1000Genomes -o input2 -iter 0
-</example>
+```
 
 Plot the results in R
-<example>
+
+```
 #open R
 pop<-read.table("pop.info")
 
@@ -301,14 +302,13 @@ plot(e$vectors[,1:2],col=pop[,1],xlab="PC1",ylab="PC2",main="joint allele freque
 legend("top",fill=1:5,levels(pop[,1]))
 dev.off()
 ## close R
-</example>
+```
 
 View plot:
 
-<example>
+```
 evince PCAngsd2.pdf
-</example>
-
+```
 
  - Do you see any difference?
  - Would any of your conclusions change? (compared to the previous PCA plot)
@@ -317,12 +317,14 @@ evince PCAngsd2.pdf
 
 
 Let try to use the PCA to infer admixture proportions based on the first 2 principal components. For the optimization we will use a small penalty on the admixture proportions (alpha).
-<example>
- $PCANGSD -beagle $GL1000Genomes -o input -admix -admix_alpha 50
-</example>
+
+```
+$PCANGSD -beagle $GL1000Genomes -o input -admix -admix_alpha 50
+```
 
 Plot the results in R
-<example>
+
+```
 library(RcppCNPy,lib="/home/albrechtsen/R/x86_64-redhat-linux-gnu-library/3.6/") # Numpy library for R
 #open R
 pop<-read.table("pop.info",as.is=T)
@@ -336,26 +338,27 @@ text(tapply(1:nrow(pop),pop[ord,1],mean),-0.05,unique(pop[ord,1]),xpd=T)
 abline(v=cumsum(sapply(unique(pop[ord,1]),function(x){sum(pop[ord,1]==x)})),col=1,lwd=1.2)
 
 ## close R
-</example>
- - how does this compare to a admixture proportion analysis  (the NGSadmix analysis above)?
+```
+
+- how does this compare to a admixture proportion analysis  (the NGSadmix analysis above)?
 
 
 
-
-** Bonus Exercise: Inbreeding in the admixed individuals
+### Bonus Exercise: Inbreeding in the admixed individuals
 
 Inbreeding in admixed samples is usually not possible to estimate using standard approaches.
 Let's try to estimate the inbreeding coefficient of the samples using the average allele frequency
 
-<example>
+```
 $PCANGSD -beagle $GL1000Genomes -o IB1 -inbreedSamples -iter 1
-</example>
-
+```
 
 join names and results, sort the values and look at the results
-<example>
+
+```
 paste pop.info IB1.inbreed.samples | LC_ALL=C sort -k3g
-</example>
+```
+
 The third column is an estimate of the inbreeding coefficient (allowing for negative)
 
  - Does any of the individuals look more inbreed than an offspring of a pair of first cousins  ?
@@ -365,28 +368,30 @@ The third column is an estimate of the inbreeding coefficient (allowing for nega
 
 Now let's try to estimate the inbreeding coefficient of the samples by using the individual allele frequencies predicted by the PCA
 
-<example>
+```
 $PCANGSD -beagle $GL1000Genomes -o IB  -inbreedSamples 
-</example>
-
+```
 
 join names and results, sort the values and look at the results
-<example>
+
+```
 paste pop.info IB.inbreed.samples | LC_ALL=C sort -k3g
-</example>
+```
 
  - Does any of the individual look inbreed?
 
 
 
-* Bonus Use of NGSadmix to infer admixture proportions for numerous individuals
+## Bonus Use of NGSadmix to infer admixture proportions for numerous individuals
+
 In this exercise we will try to use NGSadmix to analyze two different NGS datasets.
 
-** Login to the server and set paths
+*** Login to the server and set paths ***
+
 First open a terminal and login to the server.
 Next - before running any analyses - you need to set paths to the programs and the data you will use. Do this by pasting the following into your terminal window:
 
-<example>
+```
 # NB this must be done every time you open a new terminal
 
 ThePath=/home/albrechtsen/embo2021/
@@ -399,17 +404,18 @@ NGSadmix=$ThePath/prog/angsd/misc/NGSadmix
 
 # Set path to a bam file list with several bam files
 BAMFOLDER=$ThePath/sfs/data/smallerbams/
-</example>
+```
+
 
 ** First small example
 We will first try to run an NGSadmix analysis of a small dataset consisting of bam files with low depth NGS data from 30 samples: 10 from Nigeria, West Africa (YRI), 10 from Japan (JPT) and 10 with European ancestry (CEU).
 
 
+```
 CEU     | Europeans (mostly of British ancestry)
 JPT     | East Asian - Japanese individuals
 YRI     | West African - Nigerian Yoruba individuals
-<br>
-
+```
 
 
 
@@ -422,6 +428,7 @@ Due to computation We will use a very reduced data set:
 
 
 **Aims**:
+
  - to Generate Genotype likelihood files in the beagle format
  - To infer admixture proportions for low depth sequencing data
 
@@ -431,23 +438,26 @@ Due to computation We will use a very reduced data set:
 *** Make input data using ANGSD
 The input to NGSadmix is genotype likelihoods (GLs). Therefore the first step of running an NGSadmix analysis if all you have are bams files is to calculate GLs. So let's start bying doing that. First make a file that contains the paths of all the 30 bam files:
 
-<example>
+```
 find $BAMFOLDER |  grep bam$ > all.files
-</example>
+```
 
 To see the content of the file you made type:
-<example>
+
+```
 cat all.files
-</example>
+```
 
 Now calculate GLs from all the BAM files using ANGSD by running the following command in the terminal:
-<example>
+
+```
 $ANGSD -bam all.files -GL 2 -doMajorMinor 1 -doMaf 1 -SNP_pval 2e-6 -minMapQ 30 -minQ 20 -minInd 25 -minMaf 0.05 -doGlf 2 -out all -P 5
-</example>
+```
 
 NOTE that this will take a bit of time to run (a few minutes).
 While waiting,  let's try to understand the above command and get some info about the data. Here is an explanation of the options used in the command:
- <example>
+
+```
  -bam all.files : tells ANGSD that the bam files to calculate GL from are listed in the file all.files
  -GL 2 : tells ANGSD to use the GATK genotype likelihood model
  -doMajorMinor 1 : tells ANGSD to infer the major and minor alleles
@@ -460,29 +470,30 @@ While waiting,  let's try to understand the above command and get some info abou
  -doGlf 2 : tells ANGSD to write the final genotype likelihoods into a file in beagle format
  -out all : tells ANGSD to call all output files it generate "all" followed by the appropriate suffix e.g. "all.beagle.gz"
  -P 5 : tells ANDSG use 5 threads (up to 500% CPU)
- </example>
+```
 
-; If ANGSD hasn't finished running yet and you are tired of waiting for it to do so, then stop it (by typing Ctrl-C) and copy the resulting files (pre-made by us) by typing:
+f ANGSD hasn't finished running yet and you are tired of waiting for it to do so, then stop it (by typing Ctrl-C) and copy the resulting files (pre-made by us) by typing:
 
-; <example>
-; cp /home/ida/teaching/popgen17/admixexercise/ANGSDoutput/all* .
-; </example>
+```
+cp /home/ida/teaching/popgen17/admixexercise/ANGSDoutput/all* .
+```
 
-*** Explore the input data
+Explore the input data
+
 Now let's have a look at the GL file that you have created with ANGSD. It is a "beagle format" file called all.beagle.gz - and will be the input file to NGSadmix.
 The first line in this file is a header line and after that it contains a line for each locus with GLs. By using the unix command wc we can count the number of lines in the file:
 
-<example>
+```
 gunzip -c all.beagle.gz | wc -l
-</example>
+```
 
  - Use this to find out how many loci there are GLs for in the data set?
 
 Next, to get an idea of what the GL file contains try from the command line to print the first 9 columns of the first 7 lines of the file:
 
-<example>
+```
 gunzip -c all.beagle.gz | head -n 7 | cut -f1-9 | column -t
-</example>
+```
 
 In general, the first three columns of a beagle file contain marker name and the two alleles, allele1 and allele2, present in the locus (in beagle A=0, C=1, G=2, T=3).
 All following columns contain genotype likelihoods (three columns for each individual: first GL for homozygote for allele1,
