@@ -2,11 +2,11 @@
 
 
 ## Thursday afternoot - selection scan
-[variavility and haplotype based selection scans](selectionScan.md)
+[Variability and haplotype based selection scans](selectionScan.md)
 
-[selection scan based on population differences(descrete structure)](popDifScan.md)
+[Selection scan based on population differences (discrete structure)](popDifScan.md)
 
-[selection scan based on population differences(continues structure)](ScanPCA.md)
+[Selection scan based on population differences (continuous structure)](scanPCA.md)
 
 ## Friday morning - GWAS
 
