@@ -119,7 +119,7 @@ Now let try to use the PC to infer selection along the genome based on the PCA
 ```
 $PCANGSD -beagle $EU1000 -o EUsmall -selection -sites_save -minMaf 0
 # crate file with position and chromosome
- paste <(zcat /home/albrechtsen/embo2021/PCangsd/data/eu1000g.small.beagle.gz| cut -f 1 | sed 's/\_/\t/g' | sed 1d ) EUsmall.sites  > EUsmall.sites.info
+ paste <(zcat /ricco/data/PhdCourse/PCangsd/data/eu1000g.small.beagle.gz| cut -f 1 | sed 's/\_/\t/g' | sed 1d ) EUsmall.sites  > EUsmall.sites.info
 ```
 
 View the SNP location info that you will need to plot the results (the third column indicate if the site is used=1 or not =0)
@@ -394,7 +394,7 @@ Next - before running any analyses - you need to set paths to the programs and t
 ```
 # NB this must be done every time you open a new terminal
 
-ThePath=/home/albrechtsen/embo2021/
+ThePath=/ricco/data/PhdCourse
 
 # Set path to ANGSD program
 ANGSD=$ThePath/prog/angsd/angsd
@@ -579,11 +579,11 @@ Note that the order of the individuals in the plot are not the same as in the qo
 
 NB As you could tell from the number of loci included in the analysis, the above analysis is based on data from very few loci (actually we on purpose only analyzed data from a small part of the genome to make sure the analysis ran fast). Results from an analyses of data from the entire genome can be seen [[http://popgen.dk/albrecht/phdcourse/html/plots/allWholegenome_NGSadmix.pdf][here]].
 
-; s<-strsplit(basename(scan("/home/albrecht/public/embo2015/all.files",what="theFuck")),"\\.")
+; s<-strsplit(basename(scan("/home/albrecht/public/2015/all.files",what="theFuck")),"\\.")
 ; pop<-sapply(s,function(x){paste(x[5],x[1],sep="_")})
 ;
 ; # Read inferred admixture proportions
-; q<-read.table("/home/albrecht/public/embo2015/allWholegenome.beagle.gz.qopt")
+; q<-read.table("/home/albrecht/public/2015/allWholegenome.beagle.gz.qopt")
 ;
 ; # Plot them (ordered by population)
 ; ord = order(pop)
