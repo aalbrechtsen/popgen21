@@ -1,3 +1,9 @@
+
+
+
+
+
+
 #title SFS, Fst and PBS
 
 The data is from the 1000 genomes project which included the populations:
@@ -28,7 +34,7 @@ Due to computation We will use a very reduced data set:
 
 First set some paths
 * set some paths
-<example>
+```
 # NB this must be done every time you open a new terminal
 ThePath=/ricco/data/PHDcourse
 
@@ -50,17 +56,17 @@ BAMFOLDERchr5=$ThePath/sfs/data/chr5_33M_v2
 
 #copy R plot function to folder
 cp $ThePath/sfs/plot2dSFS.R .
-</example>
+```
 
  make some file lists of bam files
-<example>
+```
 #a African population
 find $BAMFOLDER | grep bam$ | grep YRI > YRI.filelist
 #a Asian population
 find $BAMFOLDER | grep bam$ | grep JPT > JPT.filelist
 #a European population
 find $BAMFOLDER | grep bam$ | grep CEU > CEU.filelist
-</example>
+```
 
                                                                                                  
      
@@ -71,42 +77,42 @@ find $BAMFOLDER | grep bam$ | grep CEU > CEU.filelist
 
 First lets set some filter to remove the worst reads (minMapQ), remove the worst of the bases (minQ). 
 
-<example>
+```
 FILTERS="-minMapQ 30 -minQ 20"
-</example>
+```
 
 Lets set some options that means we will calculate genotype likelihoods using the GATK  model (gl) and calculate the site allele frequency likelihoods (saf)
-<example>
+```
 OPT=" -dosaf 1 -gl 2"
-</example>
+```
 
 Generate site frequency likelihoods using  ANGSD  
-<example>
+```
 $ANGSD -b  YRI.filelist  -anc $ANC -out yri $FILTERS $OPT -ref $REF &
 $ANGSD -b  JPT.filelist  -anc $ANC -out jpt $FILTERS $OPT -ref $REF &
 $ANGSD -b  CEU.filelist  -anc $ANC -out ceu $FILTERS $OPT -ref $REF
-</example>
+```
 The run time is a couple of minutes
 
 If it takes to long then you can copy the results using this command:
-<example>
+```
 cp $ThePath/run/yri.saf* .
 cp $ThePath/run/ceu.saf* .
 cp $ThePath/run/jpt.saf* .
-</example>
+```
 
 Estimate the site frequency spectrum for each of the 3 populations without having to call genotypes or variable sites directly from the site frequency likelihoods
 
-<example>
+```
 #calculate the 1 dimensional SFS
 $REAL yri.saf.idx > yri.sfs
 $REAL jpt.saf.idx > jpt.sfs
 $REAL ceu.saf.idx > ceu.sfs
-</example>
+```
 
 
 In order to plot the results open R and make a barplot
-<example>
+```
  ##run in R                      
 #plot the results
 nnorm <- function(x) x/sum(x)
@@ -138,7 +144,7 @@ downsampleSFS <- function(x,chr){ #x 1:2n , chr < 2n
 resDown <- t(apply(res,1,downsampleSFS,chr=10))
 barplot(resDown,beside=T,legend=c("YRI","JPT","CEU"),names=1:9,main="realSFS downsampled polymorphic sites")
 
-</example>
+```
 
  - Which population has the largest population size?
  - The data is a small subset of the genome (2Mb). If you had analysed 6Mb it sould have looked like [[http://popgen.dk/albrecht/phdcourse/html/plots/realSFS4.pdf][this]] 
@@ -149,7 +155,7 @@ barplot(resDown,beside=T,legend=c("YRI","JPT","CEU"),names=1:9,main="realSFS dow
 
 lets use the sfs to calculate some statistics for the population
 
-<example>
+```
 
  ##run in R                      
 ## read sfs
@@ -164,7 +170,7 @@ nSeg<-sum(x[c(-1,-21)])    #Number of segregating sites
 an <- function(n) sum(1/1:(n-1)) 
 thetaW <- nSeg/an(20) # Wattersons Theta
 thetaW / 1.5e-8 / nSites / 4 # effective population size
-</example>
+```
 The above example is for the African population. Try to run it for all three populations. 
 
  - which has the largest populations size
@@ -173,16 +179,16 @@ The above example is for the African population. Try to run it for all three pop
 ** Fst and PBS
 In order to estimate Fst between two population we will need to estimate the 2-dimensional frequency spectrum from the site allele frequency likelihoods 
 
-<example>
+```
 #calculate the 2D SFS 
 $REAL yri.saf.idx ceu.saf.idx >yri.ceu.ml &
 $REAL yri.saf.idx jpt.saf.idx >yri.jpt.ml &
 $REAL jpt.saf.idx ceu.saf.idx >jpt.ceu.ml
-</example>
+```
 
 Plot the results in R
 
-<example>
+```
  ##run in R                      
 yc<-scan("yri.ceu.ml")
 yj<-scan("yri.jpt.ml")
@@ -203,7 +209,7 @@ x11()
 plot2(yj,ylab="YRI",xlab="JPT")
 x11()
 plot2(jc,ylab="JPT",xlab="CEU")
-</example>
+```
 
 Due to the very limited amount of data the plots are very noizy. However they are still informative.The colors indicate the density. High density means many sites will look like this and low density (green) means that few sites looks like this. 
 
@@ -216,7 +222,7 @@ close R
 
 In order to get a measure of this populations are most closely related we willl estimate the pairwise Fst 
 
-<example>
+```
 #first will will index the sample so the same sites are analysed for each population
 $REAL fst index jpt.saf.idx ceu.saf.idx -sfs jpt.ceu.ml -fstout jpt.ceu
 $REAL fst index yri.saf.idx ceu.saf.idx -sfs yri.ceu.ml -fstout yri.ceu
@@ -226,7 +232,7 @@ $REAL fst index yri.saf.idx jpt.saf.idx -sfs yri.jpt.ml -fstout yri.jpt
 $REAL fst stats jpt.ceu.fst.idx
 $REAL fst stats yri.jpt.fst.idx
 $REAL fst stats yri.ceu.fst.idx 
-</example>
+```
 
 look at the weigthed Fst (Fst.Weight).
  - which two populations are most closely related?
@@ -236,15 +242,15 @@ look at the weigthed Fst (Fst.Weight).
 
 Lets see how the Fst and PBS varies between different regions of the genome my using a sliding windows approach (windows site of 50kb)
 
-<example>
+```
 $REAL fst index yri.saf.idx jpt.saf.idx ceu.saf.idx -fstout yri.jpt.ceu -sfs yri.jpt.ml -sfs yri.ceu.ml -sfs jpt.ceu.ml
 $REAL fst stats2 yri.jpt.ceu.fst.idx -win 50000 -step 10000 >slidingwindowBackground
-</example>
+```
 
 
 read the data into R
 
-<example>
+```
  ##run in R                      
 r<-read.delim("slidingwindowBackground",as.is=T,head=T)
 names(r)[-c(1:4)] <- c("wFst_YRI_JPT","wFst_YRI_CEU","wFst_JPT_CEU","PBS_YRI","PBS_JPT","PBS_CEU")
@@ -268,7 +274,7 @@ hist(r$PBS_CEU,col="mistyrose",xlim=c(0,mmax),br=20)
 hist(r$PBS_JPT,col="hotpink",xlim=c(0,mmax),br=20)
 
 
-</example>
+```
 
 note the maximum observed values for both the pairwise fst and the PBS
 
@@ -278,7 +284,7 @@ note the maximum observed values for both the pairwise fst and the PBS
 Lets do the same for not so randomly selection 1Mb region of on chr 5. 
 Remember to close R
 
-<example>                                                                                                                       
+```                                                                                                                       
 #a African population for a region on chr 5                                                 
 find $BAMFOLDERchr5 | grep bam$ | grep YRI > YRIchr5.filelist
 #a Asian population for a region on chr 5                                                                                       
@@ -304,13 +310,13 @@ $REAL jptChr5.saf.idx ceuChr5.saf.idx >jpt.ceuChr5.ml
 $REAL fst index yriChr5.saf.idx jptChr5.saf.idx ceuChr5.saf.idx -fstout yri.jpt.ceuChr5 -sfs yri.jptChr5.ml -sfs yri.ceuChr5.ml -sfs jpt.ceuChr5.ml
 $REAL fst stats2 yri.jpt.ceuChr5.fst.idx -win 50000 -step 10000 >slidingwindowChr5
 
-</example>
+```
 
 
 
 Lets view how it looks in this region
 
-<example>
+```
 #run in R
 r<-read.delim("slidingwindowChr5",as.is=T,head=T)
 names(r)[-c(1:4)] <- c("wFst_YRI_JPT","wFst_YRI_CEU","wFst_JPT_CEU","PBS_YRI","PBS_JPT","PBS_CEU")
@@ -326,7 +332,7 @@ plot(r$midPos,r$PBS_YRI,ylim=c(0,max(r$PBS_CEU)),type="b",pch=18,ylab="PBS",xlab
 points(r$midPos,r$PBS_JPT,col=2,type="b",pch=18)
 points(r$midPos,r$PBS_CEU,col=3,type="b",pch=18)
 legend("topleft",fill=1:3,c("YRI","JPT","CEU"))
-</example>
+```
 
  - Compare the values you observed on this part of the genome with the random pars of the genome you looked at earlier ([[../../oulu2016/web/PBS.pdf][pdf]]). Is this region extreme?
  - Why is there two peak for the Fst and only one for the PBS?
@@ -340,14 +346,14 @@ Find out what genes is in this region by going to the [[https://genome.ucsc.edu/
 
 
 We can compare with what happens if we try to call genotypes by calling SNPs and genotypes like GATK. If you are running out of time then skip this part
-<example>
+```
 FILTERS2="-minMapQ 30 -minQ 20 -minInd 10"                           
 
 OPT2="-gl 2 -doGeno 2 -doPost 2 -doMajorMinor 4 -doMaf 1 -SNP_pval 1e-6 -postCutoff 0.95"
 $ANGSD -b  YRI.filelist  -out yri $FILTERS2 $OPT2 -ref $REF &  
 $ANGSD -b  JPT.filelist  -out jpt $FILTERS2 $OPT2 -ref $REF &
 $ANGSD -b  CEU.filelist  -out ceu $FILTERS2 $OPT2 -ref $REF  
-</example>
+```
 
 While it runs you can look at the options we choose:
  - *minInd 10*: minimum individuals with data (in this case it means with called genotypers). Why do we need this?
@@ -359,7 +365,7 @@ While it runs you can look at the options we choose:
 
 
 Plot the results in R
-<example>
+```
  ##run in R                      
 #plot the results
 nnorm <- function(x) x/sum(x)
@@ -394,7 +400,7 @@ resDown <- t(apply(res,1,downsampleSFS,chr=10))
 barplot(resDown,beside=T,legend=c("YRI","JPT","CEU"),names=1:9)
 
 
-</example>
+```
 
  - How does this compare to the likelhood based estimates ([[../html/plots/realSFS.pdf][pdf]])
 
@@ -412,20 +418,20 @@ Here we will use the called genotypes for the whole genome from 4 1000G populati
 The browser is running remotely so it is very slow so you need to have patience
 
 make a directory called tmp in your home directory
-<example>
+```
 mkdir ~/tmp
-</example>
+```
 
 then open R and run the shiny application
 
 
-<example>
+```
 .libPaths( c( .libPaths(), "/home/albrechtsen/R"))
 library(shiny)
 
 runApp("/home/albrechtsen/embo2021/selectionScan/",port=3838)
 
-</example>
+```
 
 This will open a browser but it will take a minute or two to start so be patient .
 
