@@ -4,7 +4,7 @@
 
 ## PCAngsd and selection
 
-For very resent selection we can look within closely related individuals for example with in Europeans
+For very recent selection we can look within closely related individuals for example with in Europeans
 
 **data:**
 
