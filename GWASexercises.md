@@ -42,7 +42,7 @@ Briefly, the GWAS data consist of SNP genotyping data from 356 individuals some 
 
 To make sure the GWAS analyses will run fast the main data file (gwa.bed) is in a binary format, which is not very reader friendly. 
 
-However, PLINK2 will print summary statistics about the data (number of SNPs, number of individuals, number of cases, number of controls etc) to the screen when you run an analysis.
+However, PLINK will print summary statistics about the data (number of SNPs, number of individuals, number of cases, number of controls etc) to the screen when you run an analysis.
 
 Also, there are two additional data files, gwa.bim and gwa.fam, which are not in binary format and which contains information about the SNPs in the data and the individuals in the data, respectively 
 
@@ -54,18 +54,18 @@ Let's try to perform a GWAS of our data, i.e. test each SNP for association with
 
 And let's try to do it using the simplest association test for case-control data, the allelic test, which you just performed in R in exercise 1B. 
 
-The PLINK2 option "--bfile data/gwa"" will specify that the data PLINK2 should analyse are the files in folder called "data" with the prefix "gwa".
+The PLINK option "--bfile data/gwa"" will specify that the data PLINK should analyse are the files in folder called "data" with the prefix "gwa".
 
 "—assoc" specifies that we want to use perform GWAS using the allelic test 
 
-"—adjust"" tells PLINK2 to output a file that includes p-values that are adjusted for multiple testing using Bonferroni correction as well as other fancier methods.
+"—adjust"" tells PLINK to output a file that includes p-values that are adjusted for multiple testing using Bonferroni correction as well as other fancier methods.
 
-Now perform the allelic test on all the SNPs int the dataset using PLINK2 by typing:
+Now perform the allelic test on all the SNPs int the dataset using PLINK by typing:
 ```
-plink2  --bfile data/gwa --logistic --adjust
+plink  --bfile data/gwa --logistic --adjust
 ```
 
-Take a look at the text PLINK2 prints to your screen. Specifically, note the
+Take a look at the text PLINK prints to your screen. Specifically, note the
 
  - number of SNPs
 
@@ -104,13 +104,13 @@ Here the red line is the x=y line. What does this plot suggest and why?
 
 As you can see a lot can go wrong if you do not check the quality of your data! So if you want meaningful/useful output before doing the actual testing you always have to run a lot of QC before running the association tests.
 
-One check that is worth running is a check if the indicated genders are correct. You can check this using PLINK2 to calculate the inbreeding coefficient on the X chromosome under the assumption that it is an autosomal chromosome.
+One check that is worth running is a check if the indicated genders are correct. You can check this using PLINK to calculate the inbreeding coefficient on the X chromosome under the assumption that it is an autosomal chromosome.
 
-The reason why this is interesting is that, for technical reasons PLINK2 represents haploid chromosomes, such as X for males, as homozygotes. So assuming the X is an autosomal chromosome will make the males look very inbred on the X where as the woman wont (since they are diploid on the X chromosome). This means that the inbreeding coefficient estimates you get will be close to 1 for men and close to 0 for women.
+The reason why this is interesting is that, for technical reasons PLINK represents haploid chromosomes, such as X for males, as homozygotes. So assuming the X is an autosomal chromosome will make the males look very inbred on the X where as the woman wont (since they are diploid on the X chromosome). This means that the inbreeding coefficient estimates you get will be close to 1 for men and close to 0 for women.
 
-This gender check can be performed in PLINK2 using the following command:
+This gender check can be performed in PLINK using the following command:
 ```
-plink2  --bfile data/gwa --check-sex
+plink  --bfile data/gwa --check-sex
 ```
 The results are in the file plink.sexcheck in which the gender reported from the person who sampled the data is in the column named PEDSEX (1 means male and 2 means female) and the inbreeding coefficient is in column named F).
 
@@ -128,9 +128,9 @@ If you observe any problems then fix them by changing the gender in the file gwa
 
 Another potential problem in association studies is spurious relatedness, where some of the individuals in the sample are closely related.
 
-Closely related individuals can be inferred using PLINK2 as follows:
+Closely related individuals can be inferred using PLINK as follows:
 ```
-plink2  --bfile data/gwa --genome
+plink  --bfile data/gwa --genome
 ```
 And you can plot the results by typing:
 ```
@@ -160,9 +160,9 @@ Check if there is a batch effect/non random genotyping error by using missingnes
 
 In other words, for each SNP test if there is a significantly different amount of missing data in the cases and controls (or equivalently if there is an association between the disease status and the missingness).
 
-Do this with PLINK2 by running the following command:
+Do this with PLINK by running the following command:
 ```
-plink2 --bfile data/gwa --test-missing
+plink --bfile data/gwa --test-missing
 ```
 View the result in the file plink.missing, where the p-value is given in the right most coloumn or generate a plot using the Rscript data/plink.plot.R by typing this command
 ```
@@ -184,9 +184,9 @@ Principal component analysis (PCA) and a very similar methods called multidimens
 
 Such analyses can be used to project all the genotype information (e.g. 500,000 marker sites) down to a low number of dimensions e.g. two.
 
-Multidimensional scaling based on this can be performed with PLINK2 as follows (for all individuals except for a few which has more than 20% missingness):
+Multidimensional scaling based on this can be performed with PLINK as follows (for all individuals except for a few which has more than 20% missingness):
 ```
-plink2 --bfile data/gwa --cluster --mds-plot 2 --mind 0.2
+plink --bfile data/gwa --cluster --mds-plot 2 --mind 0.2
 ```
 Run the above command and plot the results by typing
 ```
@@ -210,7 +210,7 @@ We can remove many of the error prone SNPs and individuals by removing
 
 Let us try to do rerun an association analysis where this is done:
 ```
-plink2 --bfile data/gwa --logistic --adjust --out assoc2 --hwe 0.0001 --maf 0.05 --mind 0.55 --geno 0.05
+plink --bfile data/gwa --logistic --adjust --out assoc2 --hwe 0.0001 --maf 0.05 --mind 0.55 --geno 0.05
 ```
 Plot the results using
 ```
@@ -230,7 +230,7 @@ Are any of the SNPs associated when we correct for multiple testing in smarter w
 
 For the same individuals as above we also have another phenotype. This phenotype is strongly correlated with gender. The genotyping was done independently of this phenotype so there is no batch bias. To perform association on this phenotype type
 ```
-plink2 --bfile data/gwa --logistic --pheno data/pheno3.txt --adjust --out pheno3
+plink --bfile data/gwa --logistic --pheno data/pheno3.txt --adjust --out pheno3
 Rscript data/plink.plot.R pheno3.assoc.logistic
 ```
 View the plots and results. Are any of the SNP significantly associated?
@@ -239,7 +239,7 @@ less pheno3.assoc.logistic.adjusted
 ```
 Try to perform the analysis using logistic regression adjusted for sex (which is done by adding the option "—sex"):
 ```
-plink2 --bfile data/gwa --logistic --out pheno3_sexAdjusted --pheno data/pheno3.txt --sex
+plink --bfile data/gwa --logistic --out pheno3_sexAdjusted --pheno data/pheno3.txt --sex
 Rscript data/plink.plot.R pheno3_sexAdjusted.assoc.logistic
 ```
 Are there any associated SNPs according to this analysis?
