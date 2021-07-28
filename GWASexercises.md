@@ -116,7 +116,7 @@ The results are in the file plink.sexcheck in which the gender reported from the
 
 Check the result by typing
 ```
-less plink.sexcheck
+plink.sexcheck
 ```
 NB you can use arrows to navigate up and down in the file and close the file viewing by typing q.
 ```
@@ -151,6 +151,7 @@ Are any of the individuals in your dataset closely related?
 awk '{if ($10>0.13) print $0}' plink.genome | grep -v nan | less -S
 ```
 What assumption in association studies is violated when individuals are related?
+NB you can use arrows to navigate up and down in the file and close the file viewing by typing q.
 
 And last but not least: how would you recognize if the same person is included twice (this actually happens!)
 
@@ -225,7 +226,6 @@ View the p-values adjusted for multiple testing in smarter ways than Bonferroni 
 less assoc2.assoc.logistic.adjusted
 ```
 Are any of the SNPs associated when we correct for multiple testing in smarter ways?
-
 ## Exercise F: another example of a GWAS caveat
 
 For the same individuals as above we also have another phenotype. This phenotype is strongly correlated with gender. The genotyping was done independently of this phenotype so there is no batch bias. To perform association on this phenotype type
