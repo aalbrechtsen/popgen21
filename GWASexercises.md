@@ -217,9 +217,9 @@ Plot the results using
 ```
 Rscript data/plink.plot.R assoc2.assoc.logistic
 ```
-How does the QQ-plot look (look at figure assoc2.assoc.QQ.png)?
+How does the QQ-plot look (look at figure assoc2.assoc.logistic.QQ.png)?
 
-What does the Manhattan plot suggest (look at figure assoc2.assoc.png)?
+What does the Manhattan plot suggest (look at figure assoc2.assoc.logistic.png,)?
 
 View the p-values adjusted for multiple testing in smarter ways than Bonferroni (e.g. FDR) using
 ```
