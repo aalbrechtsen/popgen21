@@ -56,7 +56,7 @@ And let's try to do it using the simplest association test for case-control data
 
 The PLINK option "--bfile data/gwa"" will specify that the data PLINK should analyse are the files in folder called "data" with the prefix "gwa".
 
-"—assoc" specifies that we want to use perform GWAS using the allelic test 
+"—logistic" specifies that we want to use perform GWAS using the logistic regression 
 
 "—adjust"" tells PLINK to output a file that includes p-values that are adjusted for multiple testing using Bonferroni correction as well as other fancier methods.
 
